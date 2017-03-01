@@ -403,6 +403,13 @@ void send_answer( int answer, struct buffer_element *element ){
 //
 // ASSIGNMENT PART 3 - add the necessary code here
 //
+    element->value = answer;
+    element->state = 3;
+
+    append_event_queue(element->receiver_address, element);
+
+    pthread_cond_signal(&waiting[element->sender_address]);
+
 
   pthread_mutex_unlock( &big_lock );
 }
