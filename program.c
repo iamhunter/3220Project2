@@ -208,7 +208,20 @@ void append_event_queue( int thread_id, struct buffer_element *element ){
 //
 // ASSIGNMENT PART 1 - add necessary code here
 //
-
+    struct buffer_element *root = event_queue[thread_id];
+    
+    if(root == NULL)
+    {
+        root = element;
+        root->next = element;
+        root->back = element;
+    }
+    else{
+		root->back->next = element;
+		element->back = root->back;
+        element->next = root;
+		root->back = element;
+	}
 }
 
 
@@ -336,6 +349,8 @@ void wait_message( int thread_id, int *sender, int *message,
 //
 // ASSIGNMENT PART 2 - add the necessary code here
 //
+
+
 
   element = remove_first_event_queue( thread_id );
 
