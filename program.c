@@ -350,6 +350,10 @@ void wait_message( int thread_id, int *sender, int *message,
 // ASSIGNMENT PART 2 - add the necessary code here
 //
 
+    while(event_queue[thread_id] == event_queue[thread_id]->next)
+    {
+        pthread_cond_wait( &waiting[thread_id], &big_lock );
+    }
 
 
   element = remove_first_event_queue( thread_id );
