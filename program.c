@@ -1,3 +1,4 @@
+//Andrew Hunter
 /* CPSC/ECE 3220 - Mark Smotherman - Spring 2017
  *
  * message passing adapted from Brinch Hansen, "RC 4000 Software:
@@ -208,20 +209,36 @@ void append_event_queue( int thread_id, struct buffer_element *element ){
 //
 // ASSIGNMENT PART 1 - add necessary code here
 //
+    // puts the root into root
     struct buffer_element *root = event_queue[thread_id];
     
+    // if queue is empty
     if(root == NULL)
     {
+        // set root to element
         root = element;
+        // set next to element
         root->next = element;
+        // set back to element
         root->back = element;
     }
+    // if queue is not empty
     else{
+        // go to root's back element
+        // go to that element's next
+        // set next to element
 		root->back->next = element;
+        // set root's back to element's back
 		element->back = root->back;
+        // set element's next to root
         element->next = root;
+        // set root's back to element
 		root->back = element;
 	}
+    // the above maintains the circular array with element being appended at
+    // the rear.
+
+
 }
 
 
@@ -350,8 +367,10 @@ void wait_message( int thread_id, int *sender, int *message,
 // ASSIGNMENT PART 2 - add the necessary code here
 //
 
+    // while the queue is empty
     while(event_queue[thread_id] == event_queue[thread_id]->next)
     {
+        // wait
         pthread_cond_wait( &waiting[thread_id], &big_lock );
     }
 
@@ -386,7 +405,8 @@ void wait_message( int thread_id, int *sender, int *message,
  */
 
 void send_answer( int answer, struct buffer_element *element ){
-  int sender;
+  // the below was causing warnings.  maybe go back to see what it does?
+  // int sender;
 
   if( element == NULL ){
     printf( "--send answer error - NULL pointer\n" );
@@ -403,11 +423,16 @@ void send_answer( int answer, struct buffer_element *element ){
 //
 // ASSIGNMENT PART 3 - add the necessary code here
 //
+    // set element's value to answer
     element->value = answer;
+    // set element's state to sent and pending wait_answer() 
+    // in sender's event queue
     element->state = 3;
 
+    // place the buffer element into the receiver's message queue
     append_event_queue(element->receiver_address, element);
 
+    // signal the sender 
     pthread_cond_signal(&waiting[element->sender_address]);
 
 
