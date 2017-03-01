@@ -368,7 +368,7 @@ void wait_message( int thread_id, int *sender, int *message,
 //
 
     // while the queue is empty
-    while(event_queue[thread_id] == NULL)
+    while(event_queue[thread_id] == event_queue[thread_id]->next)
     {
         // wait
         pthread_cond_wait( &waiting[thread_id], &big_lock );
